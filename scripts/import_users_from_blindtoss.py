@@ -41,7 +41,7 @@ def main():
     dst = sqlite3.connect(args.dest_db)
 
     rows = src.execute(
-        "SELECT id, username, passwordHash, avatarFile, isAdmin, createdAt FROM User ORDER BY id"
+        "SELECT id, username, displayName, passwordHash, avatarFile, isAdmin, createdAt FROM User ORDER BY id"
     ).fetchall()
 
     print(f"{len(rows)} compte(s) trouvé(s) dans la source.")
@@ -70,9 +70,9 @@ def main():
                 print(f"  ! avatar introuvable pour id={row['id']}: {src_path}")
 
         dst.execute(
-            "INSERT INTO User (id, username, passwordHash, avatarFile, isAdmin, createdAt) "
-            "VALUES (?, ?, ?, ?, ?, ?)",
-            (row["id"], row["username"], row["passwordHash"], new_avatar_file, row["isAdmin"], row["createdAt"]),
+            "INSERT INTO User (id, username, displayName, passwordHash, avatarFile, isAdmin, createdAt) "
+            "VALUES (?, ?, ?, ?, ?, ?, ?)",
+            (row["id"], row["username"], row["displayName"], row["passwordHash"], new_avatar_file, row["isAdmin"], row["createdAt"]),
         )
         inserted += 1
         print(f"  + id={row['id']} ({row['username']}) migré.")

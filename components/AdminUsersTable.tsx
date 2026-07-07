@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation';
 interface User {
   id: number;
   username: string;
+  displayName: string | null;
   isAdmin: boolean;
   avatarFile: string | null;
   createdAt: string;
@@ -78,7 +79,10 @@ export default function AdminUsersTable({ users, currentUserId }: { users: User[
                     {user.username.slice(0, 2).toUpperCase()}
                   </div>
                 )}
-                {user.username}
+                <span>
+                  {user.displayName || user.username}
+                  {user.displayName && <span style={{ color: 'var(--muted)' }}> (@{user.username})</span>}
+                </span>
                 {user.id === currentUserId && <span style={{ color: 'var(--muted)' }} className="text-xs">(toi)</span>}
               </td>
               <td className="py-3" style={{ color: 'var(--muted)' }}>

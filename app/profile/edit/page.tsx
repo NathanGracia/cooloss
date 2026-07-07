@@ -2,6 +2,7 @@ import { redirect } from 'next/navigation';
 import Link from 'next/link';
 import { getCurrentClaims } from '@/lib/session';
 import AvatarUploader from '@/components/AvatarUploader';
+import DisplayNameEditor from '@/components/DisplayNameEditor';
 
 export default async function ProfileEditPage() {
   const claims = await getCurrentClaims();
@@ -15,6 +16,7 @@ export default async function ProfileEditPage() {
           {claims.isAdmin && <p className="text-sm" style={{ color: 'var(--accent)' }}>Admin</p>}
         </div>
         <AvatarUploader currentAvatar={claims.avatarFile} />
+        <DisplayNameEditor username={claims.username} currentDisplayName={claims.displayName} />
         <Link href="/" className="link text-sm">← Retour</Link>
       </div>
     </main>
