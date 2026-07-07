@@ -42,7 +42,7 @@ export default async function Home() {
               <div>
                 <div className="font-semibold">{claims.username}</div>
                 {claims.isAdmin && (
-                  <div className="text-xs" style={{ color: 'var(--accent)' }}>Admin</div>
+                  <Link href="/admin" className="text-xs" style={{ color: 'var(--accent)' }}>Admin →</Link>
                 )}
               </div>
             </div>
