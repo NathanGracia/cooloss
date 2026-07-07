@@ -13,8 +13,10 @@ Un seul modèle, `User` (`prisma/schema.prisma`) :
 ```
 id, username (unique, toujours lowercase), displayName (optionnel, nom stylisé),
 passwordHash (scrypt "salt:hash"), avatarFile (URL absolue ou null),
-isAdmin, createdAt
+isAdmin, isHabitue, createdAt
 ```
+
+`isHabitue` : rôle intermédiaire, spécifique à Memoss (accès en lecture à l'historique des légendes / timeline, pas de droit de modération). Géré ici (page `/admin`) même si Blindtoss n'en a aucun usage — ce champ est simplement ignoré par Blindtoss (pas dans son `SharedClaims` local, pas de colonne correspondante dans son miroir).
 
 `username` = identifiant de connexion, jamais affiché directement si `displayName` est renseigné (`displayName || username` partout côté affichage).
 
@@ -34,7 +36,7 @@ isAdmin, createdAt
 | `/api/session/refresh` | POST | Réémet un token frais (claims à jour, expiration glissante) |
 | `/api/avatar` | POST | Upload avatar, réémet un token frais |
 | `/api/profile` | PATCH | Change `displayName`, réémet un token frais |
-| `/api/admin/users/[id]` | PATCH | Toggle `isAdmin` — refuse qu'un admin se retire lui-même (anti-lockout) |
+| `/api/admin/users/[id]` | PATCH | Toggle `isAdmin` et/ou `isHabitue` (indépendants, body `{isAdmin?, isHabitue?}`) — refuse qu'un admin retire son propre `isAdmin` (anti-lockout), pas de restriction équivalente sur `isHabitue` |
 | `/api/admin/users/[id]/reset-password` | POST | Génère un mot de passe aléatoire, retourné **une seule fois** dans la réponse (pas d'email configuré, à relayer à la main) |
 
 Toutes les routes `/api/admin/*` et la page `/admin` sont gatées par `requireAdminClaims()`.
