@@ -8,10 +8,12 @@ export default function DisplayNameEditor({ username, currentDisplayName }: { us
   const [value, setValue] = useState(currentDisplayName ?? '');
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState('');
+  const [saved, setSaved] = useState(false);
 
   const handleSave = async () => {
     setSaving(true);
     setError('');
+    setSaved(false);
     try {
       const res = await fetch('/api/profile', {
         method: 'PATCH',
@@ -20,7 +22,9 @@ export default function DisplayNameEditor({ username, currentDisplayName }: { us
       });
       const data = await res.json();
       if (!res.ok) { setError(data.error || 'Erreur'); return; }
+      setSaved(true);
       router.refresh();
+      setTimeout(() => setSaved(false), 2500);
     } catch {
       setError('Erreur réseau');
     } finally {
@@ -35,12 +39,23 @@ export default function DisplayNameEditor({ username, currentDisplayName }: { us
         <input
           className="input"
           value={value}
-          onChange={(e) => setValue(e.target.value)}
+          onChange={(e) => { setValue(e.target.value); setSaved(false); }}
           placeholder={username}
           maxLength={20}
+          style={saved ? { borderColor: '#4ade80' } : undefined}
         />
-        <button onClick={handleSave} disabled={saving} className="btn btn-primary" style={{ flexShrink: 0 }}>
-          {saving ? '…' : 'OK'}
+        <button
+          onClick={handleSave}
+          disabled={saving}
+          className="btn"
+          style={{
+            flexShrink: 0,
+            background: saved ? '#4ade80' : 'var(--accent)',
+            color: saved ? '#052e12' : 'white',
+            transition: 'background .15s, color .15s',
+          }}
+        >
+          {saving ? '…' : saved ? '✓ Enregistré' : 'OK'}
         </button>
       </div>
       <p className="text-xs mt-1" style={{ color: 'var(--muted)' }}>
