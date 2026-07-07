@@ -34,19 +34,27 @@ export async function POST(request: Request) {
 
     const existing = await prisma.user.findUnique({ where: { id: claims.uid }, select: { avatarFile: true } });
     if (existing?.avatarFile) {
-      // avatarFile peut être une URL absolue (comptes migrés) ou un chemin
-      // relatif /avatars/... (comptes créés ici) — on ne tente de
-      // supprimer que les fichiers locaux.
-      if (existing.avatarFile.startsWith('/avatars/')) {
-        const oldPath = path.join(process.cwd(), 'public', existing.avatarFile);
-        await unlink(oldPath).catch(() => {});
+      // Ne supprimer que les fichiers réellement stockés ici (chemin
+      // relatif hérité, ou URL absolue https://cooloss.../avatars/...) —
+      // pas un avatar sur un autre domaine (ne devrait pas arriver, mais
+      // évite un unlink() hors de public/avatars par prudence).
+      const oldFileName = existing.avatarFile.startsWith('/avatars/')
+        ? existing.avatarFile.slice('/avatars/'.length)
+        : existing.avatarFile.startsWith('https://cooloss.nathangracia.com/avatars/')
+        ? existing.avatarFile.slice('https://cooloss.nathangracia.com/avatars/'.length)
+        : null;
+      if (oldFileName) {
+        await unlink(path.join(avatarsDir, oldFileName)).catch(() => {});
       }
     }
 
     const bytes = await file.arrayBuffer();
     await writeFile(filePath, Buffer.from(bytes));
 
-    const avatarFile = `/avatars/${fileName}`;
+    // URL absolue, pas relative : ce champ est rendu tel quel dans <img src>
+    // sur Blindtoss et Memoss, sur leurs propres origines — un chemin
+    // relatif y pointerait vers un fichier inexistant chez eux.
+    const avatarFile = `https://cooloss.nathangracia.com/avatars/${fileName}`;
     const updated = await prisma.user.update({
       where: { id: claims.uid },
       data: { avatarFile },
