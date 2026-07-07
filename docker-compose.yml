@@ -1,0 +1,18 @@
+services:
+  app:
+    build: .
+    ports:
+      - "3010:3000"
+    environment:
+      - NODE_ENV=production
+      - SHARED_SESSION_SECRET=${SHARED_SESSION_SECRET}
+      - DATABASE_URL=file:/app/prisma/dev.db
+    volumes:
+      - ./public/avatars:/app/public/avatars
+      - ./prisma:/app/prisma
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "-q", "--spider", "http://localhost:3000"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
