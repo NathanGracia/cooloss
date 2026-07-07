@@ -7,7 +7,7 @@ import crypto from 'crypto';
 // le format ici, réplique le changement là-bas.
 //
 // Format du token : "<payload base64url>.<hmac hex>"
-// payload (JSON, avant encodage) : { uid, username, displayName, isAdmin, avatarFile, exp }
+// payload (JSON, avant encodage) : { uid, username, displayName, isAdmin, isHabitue, avatarFile, exp }
 
 export const SHARED_SESSION_COOKIE = 'nathangracia_session';
 export const SHARED_SESSION_DOMAIN = '.nathangracia.com';
@@ -23,6 +23,7 @@ export interface SharedClaims {
   username: string;
   displayName: string | null;
   isAdmin: boolean;
+  isHabitue: boolean;
   avatarFile: string | null;
   exp: number;
 }

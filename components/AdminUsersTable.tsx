@@ -8,6 +8,7 @@ interface User {
   username: string;
   displayName: string | null;
   isAdmin: boolean;
+  isHabitue: boolean;
   avatarFile: string | null;
   createdAt: string;
 }
@@ -17,14 +18,14 @@ export default function AdminUsersTable({ users, currentUserId }: { users: User[
   const [busyId, setBusyId] = useState<number | null>(null);
   const [error, setError] = useState('');
 
-  const toggleAdmin = async (user: User) => {
+  const patchUser = async (user: User, patch: { isAdmin?: boolean; isHabitue?: boolean }) => {
     setError('');
     setBusyId(user.id);
     try {
       const res = await fetch(`/api/admin/users/${user.id}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ isAdmin: !user.isAdmin }),
+        body: JSON.stringify(patch),
       });
       const data = await res.json();
       if (!res.ok) { setError(data.error || 'Erreur'); return; }
@@ -60,7 +61,7 @@ export default function AdminUsersTable({ users, currentUserId }: { users: User[
           <tr className="text-left" style={{ color: 'var(--muted)' }}>
             <th className="pb-2 font-semibold">Compte</th>
             <th className="pb-2 font-semibold">Créé le</th>
-            <th className="pb-2 font-semibold">Admin</th>
+            <th className="pb-2 font-semibold">Rôle</th>
             <th className="pb-2 font-semibold"></th>
           </tr>
         </thead>
@@ -89,15 +90,26 @@ export default function AdminUsersTable({ users, currentUserId }: { users: User[
                 {new Date(user.createdAt).toLocaleDateString('fr-FR')}
               </td>
               <td className="py-3">
-                <button
-                  onClick={() => toggleAdmin(user)}
-                  disabled={busyId === user.id || (user.id === currentUserId && user.isAdmin)}
-                  className="btn btn-ghost"
-                  style={user.isAdmin ? { borderColor: 'var(--accent)', color: 'var(--accent)' } : undefined}
-                  title={user.id === currentUserId && user.isAdmin ? 'Tu ne peux pas te retirer toi-même' : undefined}
-                >
-                  {user.isAdmin ? 'Admin' : 'Membre'}
-                </button>
+                <div className="flex gap-1.5">
+                  <button
+                    onClick={() => patchUser(user, { isAdmin: !user.isAdmin })}
+                    disabled={busyId === user.id || (user.id === currentUserId && user.isAdmin)}
+                    className="btn btn-ghost"
+                    style={user.isAdmin ? { borderColor: 'var(--accent)', color: 'var(--accent)' } : undefined}
+                    title={user.id === currentUserId && user.isAdmin ? 'Tu ne peux pas te retirer toi-même' : undefined}
+                  >
+                    {user.isAdmin ? 'Admin' : '+ Admin'}
+                  </button>
+                  <button
+                    onClick={() => patchUser(user, { isHabitue: !user.isHabitue })}
+                    disabled={busyId === user.id}
+                    className="btn btn-ghost"
+                    style={user.isHabitue ? { borderColor: '#c084fc', color: '#c084fc' } : undefined}
+                    title="Accès à l'historique des légendes / timeline Memoss"
+                  >
+                    {user.isHabitue ? 'Habitué' : '+ Habitué'}
+                  </button>
+                </div>
               </td>
               <td className="py-3">
                 <button onClick={() => resetPassword(user)} disabled={busyId === user.id} className="btn btn-ghost text-xs">

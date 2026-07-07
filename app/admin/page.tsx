@@ -10,7 +10,7 @@ export default async function AdminPage() {
 
   const users = await prisma.user.findMany({
     orderBy: { createdAt: 'asc' },
-    select: { id: true, username: true, displayName: true, isAdmin: true, avatarFile: true, createdAt: true },
+    select: { id: true, username: true, displayName: true, isAdmin: true, isHabitue: true, avatarFile: true, createdAt: true },
   });
 
   return (

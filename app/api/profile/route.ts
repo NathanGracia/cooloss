@@ -26,11 +26,12 @@ export async function PATCH(request: Request) {
       username: updated.username,
       displayName: updated.displayName,
       isAdmin: updated.isAdmin,
+      isHabitue: updated.isHabitue,
       avatarFile: updated.avatarFile,
     });
 
     const response = NextResponse.json({
-      user: { id: updated.id, username: updated.username, displayName: updated.displayName, isAdmin: updated.isAdmin, avatarFile: updated.avatarFile },
+      user: { id: updated.id, username: updated.username, displayName: updated.displayName, isAdmin: updated.isAdmin, isHabitue: updated.isHabitue, avatarFile: updated.avatarFile },
     });
     response.cookies.set(SHARED_SESSION_COOKIE, token, sharedCookieOptions(SHARED_SESSION_DURATION_MS / 1000));
     return response;
