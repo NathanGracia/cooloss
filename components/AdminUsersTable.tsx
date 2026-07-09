@@ -53,73 +53,107 @@ export default function AdminUsersTable({ users, currentUserId }: { users: User[
     }
   };
 
+  // Grid plutôt que <table> : un <td> avec display:flex (nécessaire pour l'avatar + nom)
+  // casse la négociation de largeur des colonnes natives du tableau, ce qui désalignait
+  // les lignes selon la longueur du contenu. Des colonnes de grid explicites + nowrap sur
+  // les boutons garantissent un alignement stable quelle que soit la longueur des noms.
+  const gridCols = 'minmax(160px,1.4fr) 96px minmax(200px,auto) minmax(170px,auto)';
+
   return (
     <div>
       {error && <p className="text-sm text-red-400 mb-3">{error}</p>}
-      <table className="w-full text-sm">
-        <thead>
-          <tr className="text-left" style={{ color: 'var(--muted)' }}>
-            <th className="pb-2 font-semibold">Compte</th>
-            <th className="pb-2 font-semibold">Créé le</th>
-            <th className="pb-2 font-semibold">Rôle</th>
-            <th className="pb-2 font-semibold"></th>
-          </tr>
-        </thead>
-        <tbody>
+      <div style={{ overflowX: 'auto' }}>
+        <div style={{ minWidth: 640 }}>
+          <div
+            style={{ display: 'grid', gridTemplateColumns: gridCols, gap: 12, color: 'var(--muted)' }}
+            className="text-xs font-bold pb-2"
+          >
+            <div style={{ textTransform: 'uppercase', letterSpacing: 0.4 }}>Compte</div>
+            <div style={{ textTransform: 'uppercase', letterSpacing: 0.4 }}>Créé le</div>
+            <div style={{ textTransform: 'uppercase', letterSpacing: 0.4 }}>Rôle</div>
+            <div />
+          </div>
+
           {users.map(user => (
-            <tr key={user.id} style={{ borderTop: '1px solid var(--border)' }}>
-              <td className="py-3 flex items-center gap-2">
+            <div
+              key={user.id}
+              style={{
+                display: 'grid', gridTemplateColumns: gridCols, gap: 12, alignItems: 'center',
+                borderTop: '1px solid var(--border)', padding: '14px 0',
+              }}
+            >
+              <div style={{ display: 'flex', alignItems: 'center', gap: 10, minWidth: 0 }}>
                 {user.avatarFile ? (
                   // eslint-disable-next-line @next/next/no-img-element
-                  <img src={user.avatarFile} alt="" style={{ width: 28, height: 28 }} className="rounded-full object-cover" />
+                  <img
+                    src={user.avatarFile}
+                    alt=""
+                    style={{ width: 32, height: 32, borderRadius: '50%', objectFit: 'cover', border: '2px solid #ffffff', flexShrink: 0 }}
+                  />
                 ) : (
                   <div
-                    className="rounded-full flex items-center justify-center text-xs font-bold"
-                    style={{ width: 28, height: 28, background: 'var(--accent)' }}
+                    className="flex items-center justify-center text-xs font-bold"
+                    style={{
+                      width: 32, height: 32, borderRadius: '50%', background: 'var(--accent)', color: '#ffffff',
+                      border: '2px solid #ffffff', flexShrink: 0,
+                    }}
                   >
                     {user.username.slice(0, 2).toUpperCase()}
                   </div>
                 )}
-                <span>
-                  {user.displayName || user.username}
-                  {user.displayName && <span style={{ color: 'var(--muted)' }}> (@{user.username})</span>}
-                </span>
-                {user.id === currentUserId && <span style={{ color: 'var(--muted)' }} className="text-xs">(toi)</span>}
-              </td>
-              <td className="py-3" style={{ color: 'var(--muted)' }}>
-                {new Date(user.createdAt).toLocaleDateString('fr-FR')}
-              </td>
-              <td className="py-3">
-                <div className="flex gap-1.5">
-                  <button
-                    onClick={() => patchUser(user, { isAdmin: !user.isAdmin })}
-                    disabled={busyId === user.id || (user.id === currentUserId && user.isAdmin)}
-                    className="btn btn-ghost"
-                    style={user.isAdmin ? { borderColor: 'var(--accent)', color: 'var(--accent)' } : undefined}
-                    title={user.id === currentUserId && user.isAdmin ? 'Tu ne peux pas te retirer toi-même' : undefined}
-                  >
-                    {user.isAdmin ? 'Admin' : '+ Admin'}
-                  </button>
-                  <button
-                    onClick={() => patchUser(user, { isHabitue: !user.isHabitue })}
-                    disabled={busyId === user.id}
-                    className="btn btn-ghost"
-                    style={user.isHabitue ? { borderColor: '#c084fc', color: '#c084fc' } : undefined}
-                    title="Accès à l'historique des légendes / timeline Memoss"
-                  >
-                    {user.isHabitue ? 'Habitué' : '+ Habitué'}
-                  </button>
+                <div style={{ minWidth: 0 }}>
+                  <div style={{ display: 'flex', alignItems: 'baseline', gap: 6, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                    <span className="font-semibold">{user.displayName || user.username}</span>
+                    {user.id === currentUserId && <span className="text-xs" style={{ color: 'var(--muted)' }}>(toi)</span>}
+                  </div>
+                  {user.displayName && (
+                    <div className="text-xs" style={{ color: 'var(--muted)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                      @{user.username}
+                    </div>
+                  )}
                 </div>
-              </td>
-              <td className="py-3">
-                <button onClick={() => resetPassword(user)} disabled={busyId === user.id} className="btn btn-ghost text-xs">
-                  Réinitialiser le mot de passe
+              </div>
+
+              <div className="text-sm" style={{ color: 'var(--muted)', whiteSpace: 'nowrap' }}>
+                {new Date(user.createdAt).toLocaleDateString('fr-FR')}
+              </div>
+
+              <div className="flex gap-1.5">
+                <button
+                  onClick={() => patchUser(user, { isAdmin: !user.isAdmin })}
+                  disabled={busyId === user.id || (user.id === currentUserId && user.isAdmin)}
+                  className="btn btn-ghost text-xs"
+                  style={{ whiteSpace: 'nowrap', ...(user.isAdmin ? { borderColor: 'var(--accent)', color: 'var(--accent)' } : {}) }}
+                  title={user.id === currentUserId && user.isAdmin ? 'Tu ne peux pas te retirer toi-même' : undefined}
+                >
+                  {user.isAdmin ? 'Admin' : '+ Admin'}
                 </button>
-              </td>
-            </tr>
+                <button
+                  onClick={() => patchUser(user, { isHabitue: !user.isHabitue })}
+                  disabled={busyId === user.id}
+                  className="btn btn-ghost text-xs"
+                  style={{ whiteSpace: 'nowrap', ...(user.isHabitue ? { borderColor: '#c084fc', color: '#c084fc' } : {}) }}
+                  title="Accès à l'historique des légendes / timeline Memoss"
+                >
+                  {user.isHabitue ? 'Habitué' : '+ Habitué'}
+                </button>
+              </div>
+
+              <div>
+                <button
+                  onClick={() => resetPassword(user)}
+                  disabled={busyId === user.id}
+                  className="btn btn-ghost text-xs"
+                  style={{ whiteSpace: 'nowrap' }}
+                  title="Réinitialiser le mot de passe"
+                >
+                  Réinitialiser
+                </button>
+              </div>
+            </div>
           ))}
-        </tbody>
-      </table>
+        </div>
+      </div>
     </div>
   );
 }

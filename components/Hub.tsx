@@ -2,12 +2,14 @@
 
 import { useState, type CSSProperties } from 'react';
 import Link from 'next/link';
+import VideoBackground from './VideoBackground';
 
 interface HubApp {
   name: string;
   url: string | null;
   gradient: string | null;
   mono: string | null;
+  image: string | null;
 }
 
 interface HubClaims {
@@ -18,24 +20,23 @@ interface HubClaims {
 }
 
 const APPS: HubApp[] = [
-  { name: 'Memoss', url: 'https://memoss.nathangracia.com', gradient: 'linear-gradient(135deg, #22d3ee, #6366f1)', mono: 'M' },
-  { name: 'Blackjackoss', url: 'https://blackjackoss.nathangracia.com', gradient: 'linear-gradient(135deg, #a78bfa, #fbbf24)', mono: 'BJ' },
-  { name: 'Blindtoss', url: 'https://blindtoss.nathangracia.com', gradient: 'linear-gradient(135deg, #4a90d9, #7ec8e3)', mono: 'BT' },
-  { name: 'Simulatioss', url: 'https://simulatioss.nathangracia.com', gradient: 'linear-gradient(135deg, #4ade80, #60a5fa)', mono: 'S' },
-  { name: 'Quizzoss', url: 'https://quizzoss.nathangracia.com', gradient: 'linear-gradient(135deg, #f87171, #f59e0b)', mono: 'Q' },
+  { name: 'Memoss', url: 'https://memoss.nathangracia.com', gradient: 'linear-gradient(135deg, #22d3ee, #6366f1)', mono: 'M', image: '/hub/memoss.jpg' },
+  { name: 'Blackjackoss', url: 'https://blackjackoss.nathangracia.com', gradient: 'linear-gradient(135deg, #a78bfa, #fbbf24)', mono: 'BJ', image: '/hub/blackjackoss.jpg' },
+  { name: 'Blindtoss', url: 'https://blindtoss.nathangracia.com', gradient: 'linear-gradient(135deg, #4a90d9, #7ec8e3)', mono: 'BT', image: '/hub/blindtoss.jpg' },
+  { name: 'Simulatioss', url: 'https://simulatioss.nathangracia.com', gradient: 'linear-gradient(135deg, #4ade80, #60a5fa)', mono: 'S', image: '/hub/simulatioss.jpg' },
+  { name: 'Quizzoss', url: 'https://quizzoss.nathangracia.com', gradient: 'linear-gradient(135deg, #f87171, #f59e0b)', mono: 'Q', image: '/hub/quizzoss.jpg' },
   // Emplacements réservés pour les prochaines apps "-oss" — jusqu'à 12
   // cartes comme la maquette d'origine, remplies au fur et à mesure.
-  { name: 'Projet 06', url: null, gradient: null, mono: null },
-  { name: 'Projet 07', url: null, gradient: null, mono: null },
-  { name: 'Projet 08', url: null, gradient: null, mono: null },
-  { name: 'Projet 09', url: null, gradient: null, mono: null },
-  { name: 'Projet 10', url: null, gradient: null, mono: null },
-  { name: 'Projet 11', url: null, gradient: null, mono: null },
-  { name: 'Projet 12', url: null, gradient: null, mono: null },
+  { name: 'Projet 06', url: null, gradient: null, mono: null, image: null },
+  { name: 'Projet 07', url: null, gradient: null, mono: null, image: null },
+  { name: 'Projet 08', url: null, gradient: null, mono: null, image: null },
+  { name: 'Projet 09', url: null, gradient: null, mono: null, image: null },
+  { name: 'Projet 10', url: null, gradient: null, mono: null, image: null },
+  { name: 'Projet 11', url: null, gradient: null, mono: null, image: null },
+  { name: 'Projet 12', url: null, gradient: null, mono: null, image: null },
 ];
 
-// Groupées par ligne de 4, comme la maquette — une flèche/avion reliant les
-// lignes entre elles quand il y en a plus d'une.
+// Groupées par ligne de 4, comme la maquette.
 const ROWS: HubApp[][] = [];
 for (let i = 0; i < APPS.length; i += 4) ROWS.push(APPS.slice(i, i + 4));
 
@@ -60,44 +61,9 @@ export default function Hub({ claims }: { claims: HubClaims }) {
         position: 'relative',
         overflow: 'hidden',
         fontFamily: "'Nunito', sans-serif",
-        background: 'linear-gradient(180deg, #0f6fd6 0%, #2f8fe0 22%, #58b3ec 42%, #86cdf0 58%, #b9e4f5 68%)',
       }}
     >
-      <link rel="preconnect" href="https://fonts.googleapis.com" />
-      <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-      <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@500;600;700;800&display=swap" rel="stylesheet" />
-
-      {/*
-        Fond ciel + nuages — provisoire. À remplacer par la vidéo mp4 de
-        Nathan (un <video autoPlay muted loop playsInline> en position
-        absolute inset:0, object-fit:cover, sous ce même conteneur) quand il
-        l'envoie. Le reste du hub (header, cartes) n'en dépend pas.
-      */}
-      <div
-        style={{
-          position: 'absolute', top: '6%', left: 0, width: '220%', height: 90,
-          backgroundImage:
-            'radial-gradient(circle at 6% 55%, rgba(255,255,255,0.85) 0 30px, transparent 32px), ' +
-            'radial-gradient(circle at 14% 40%, rgba(255,255,255,0.8) 0 40px, transparent 42px), ' +
-            'radial-gradient(circle at 24% 58%, rgba(255,255,255,0.8) 0 26px, transparent 28px), ' +
-            'radial-gradient(circle at 45% 45%, rgba(255,255,255,0.7) 0 34px, transparent 36px), ' +
-            'radial-gradient(circle at 60% 60%, rgba(255,255,255,0.75) 0 24px, transparent 26px)',
-          opacity: 0.9,
-        }}
-        className="hub-cloud-layer-1"
-      />
-      <div
-        style={{
-          position: 'absolute', top: '1%', left: 0, width: '220%', height: 60,
-          backgroundImage:
-            'radial-gradient(circle at 70% 50%, rgba(255,255,255,0.6) 0 26px, transparent 28px), ' +
-            'radial-gradient(circle at 85% 45%, rgba(255,255,255,0.55) 0 20px, transparent 22px)',
-          opacity: 0.8,
-        }}
-        className="hub-cloud-layer-2"
-      />
-      <div style={{ position: 'absolute', bottom: 0, left: 0, width: '100%', height: '22%', background: 'linear-gradient(180deg, #bdeaf6 0%, #7fd8ea 40%, #4fc3dd 100%)' }} />
-      <div style={{ position: 'absolute', bottom: '18%', left: 0, width: '100%', height: 6, background: 'rgba(255,255,255,0.6)', filter: 'blur(1px)' }} />
+      <VideoBackground />
 
       {/* Header */}
       <h1
@@ -158,11 +124,21 @@ export default function Hub({ claims }: { claims: HubClaims }) {
               </Link>
             )}
             <Link
-              href="/profile/edit"
+              href="/profile"
               className="hub-menu-item"
               style={{
                 display: 'block', padding: '12px 16px',
                 borderTop: claims.isAdmin ? '1px solid #dbeefb' : undefined,
+                fontFamily: "'Nunito', sans-serif", fontWeight: 700, fontSize: 15, color: '#1a5fb0',
+              }}
+            >
+              Mon profil
+            </Link>
+            <Link
+              href="/profile/edit"
+              className="hub-menu-item"
+              style={{
+                display: 'block', padding: '12px 16px', borderTop: '1px solid #dbeefb',
                 fontFamily: "'Nunito', sans-serif", fontWeight: 700, fontSize: 15, color: '#1a5fb0',
               }}
             >
@@ -187,15 +163,6 @@ export default function Hub({ claims }: { claims: HubClaims }) {
       <main style={{ position: 'relative', zIndex: 3, maxWidth: 1180, margin: '0 auto', minHeight: '100vh', display: 'flex', flexDirection: 'column', justifyContent: 'center', padding: '60px 40px' }}>
         {ROWS.map((row, ri) => (
           <div key={ri} style={{ position: 'relative', marginBottom: 22 }}>
-            {ri < ROWS.length - 1 && (
-              <>
-                <div style={{ position: 'absolute', top: '50%', left: 0, width: '100%', height: 2, background: 'rgba(255,255,255,0.75)', transform: 'translateY(-50%)', zIndex: 0 }} />
-                <div style={{ position: 'absolute', top: '50%', right: -6, transform: 'translateY(-50%)', zIndex: 0, fontSize: 20, textShadow: '0 1px 2px rgba(0,40,90,0.4)' }}>
-                  ✈️
-                </div>
-              </>
-            )}
-
             <div style={{ position: 'relative', zIndex: 1, display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 22, padding: 32 }}>
               {row.map(app => {
                 const cardStyle: CSSProperties = {
@@ -217,7 +184,16 @@ export default function Hub({ claims }: { claims: HubClaims }) {
                     >
                       {app.name}
                     </div>
-                    {app.gradient ? (
+                    {app.image ? (
+                      <div style={{ flex: 1, position: 'relative', minHeight: 0, borderRadius: 14, overflow: 'hidden', boxShadow: 'inset 0 0 0 1.5px rgba(255,255,255,0.6)' }}>
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                        <img
+                          src={app.image}
+                          alt=""
+                          style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
+                        />
+                      </div>
+                    ) : app.gradient ? (
                       <div
                         style={{
                           flex: 1, position: 'relative', minHeight: 0, borderRadius: 14, overflow: 'hidden',

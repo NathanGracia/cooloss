@@ -3,6 +3,7 @@
 import { useState, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
+import VideoBackground from '@/components/VideoBackground';
 
 function RegisterForm() {
   const router = useRouter();
@@ -42,6 +43,7 @@ function RegisterForm() {
 
   return (
     <main className="min-h-screen flex items-center justify-center p-6">
+      <VideoBackground />
       <div className="panel w-full max-w-sm p-8">
         <h1 className="text-xl font-bold mb-6">Créer un compte</h1>
         <form onSubmit={handleSubmit} className="space-y-4">

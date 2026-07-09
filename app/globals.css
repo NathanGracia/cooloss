@@ -1,38 +1,46 @@
 @import "tailwindcss";
+@import url('https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@500;600;700;800&display=swap');
 
 :root {
-  --bg: #0b0f16;
-  --panel: #131a24;
-  --border: rgba(255, 255, 255, 0.1);
-  --text: #f1f5f9;
-  --muted: #8896a6;
-  --accent: #4a90d9;
+  --bg: #58b3ec;
+  --panel: rgba(255, 255, 255, 0.78);
+  --panel-border: rgba(255, 255, 255, 0.85);
+  --border: rgba(15, 60, 110, 0.15);
+  --text: #123a5e;
+  --muted: #5b84ab;
+  --accent: #3f8fd4;
 }
 
 body {
   background: var(--bg);
   color: var(--text);
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-family: 'Nunito', sans-serif;
   min-height: 100vh;
 }
 
+h1 { font-family: 'Fredoka One', sans-serif; font-weight: 400; }
+
 .panel {
   background: var(--panel);
-  border: 1px solid var(--border);
-  border-radius: 14px;
+  backdrop-filter: blur(16px);
+  border: 1.5px solid var(--panel-border);
+  border-radius: 22px;
+  box-shadow: 0 6px 8px rgba(5, 40, 80, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.6);
 }
 
 .input {
-  background: rgba(255, 255, 255, 0.04);
-  border: 1px solid var(--border);
-  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.6);
+  border: 1.5px solid var(--border);
+  border-radius: 12px;
   padding: 0.65rem 0.9rem;
   color: var(--text);
   width: 100%;
 }
+.input::placeholder { color: var(--muted); }
 .input:focus {
   outline: none;
   border-color: var(--accent);
+  background: rgba(255, 255, 255, 0.85);
 }
 
 .btn {
@@ -40,26 +48,28 @@ body {
   align-items: center;
   justify-content: center;
   gap: 0.5rem;
-  border-radius: 10px;
+  border-radius: 20px;
   padding: 0.65rem 1.2rem;
-  font-weight: 600;
+  font-weight: 700;
   font-size: 0.95rem;
   cursor: pointer;
   transition: transform .15s, background .15s;
   border: none;
 }
 .btn:active { transform: scale(0.98); }
-.btn-primary { background: var(--accent); color: white; }
-.btn-primary:hover { background: #3a7cc4; }
-.btn-ghost { background: transparent; color: var(--muted); border: 1px solid var(--border); }
-.btn-ghost:hover { color: var(--text); border-color: var(--muted); }
+.btn-primary {
+  background: linear-gradient(180deg, #6bb9e8, #3f8fd4);
+  color: white;
+  box-shadow: 0 4px 0 rgba(10, 50, 100, 0.3);
+}
+.btn-primary:hover { background: linear-gradient(180deg, #5aa8dc, #3379bd); }
+.btn-ghost { background: rgba(255, 255, 255, 0.5); color: var(--muted); border: 1.5px solid var(--border); }
+.btn-ghost:hover { color: var(--text); border-color: var(--accent); background: rgba(255, 255, 255, 0.75); }
 
-a.link { color: var(--accent); text-decoration: none; }
+a.link { color: var(--accent); text-decoration: none; font-weight: 700; }
 a.link:hover { text-decoration: underline; }
 
 /* ── Hub (page d'accueil) ─────────────────────────────────────────────────── */
-@keyframes hub-cloud-drift { from { transform: translateX(0); } to { transform: translateX(-50%); } }
-
 .hub-card {
   transition: transform 0.15s ease, background 0.15s ease;
 }
@@ -73,8 +83,5 @@ a.link:hover { text-decoration: underline; }
   transition: color 0.15s ease;
 }
 .hub-card:hover .hub-card-title { color: #1a1a1a; }
-
-.hub-cloud-layer-1 { animation: hub-cloud-drift 140s linear infinite; }
-.hub-cloud-layer-2 { animation: hub-cloud-drift 200s linear infinite reverse; }
 
 .hub-menu-item:hover { background: #dbeefb; }

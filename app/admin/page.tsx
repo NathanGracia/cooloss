@@ -3,6 +3,7 @@ import Link from 'next/link';
 import { requireAdminClaims } from '@/lib/session';
 import { prisma } from '@/lib/prisma';
 import AdminUsersTable from '@/components/AdminUsersTable';
+import VideoBackground from '@/components/VideoBackground';
 
 export default async function AdminPage() {
   const claims = await requireAdminClaims();
@@ -15,7 +16,8 @@ export default async function AdminPage() {
 
   return (
     <main className="min-h-screen p-6">
-      <div className="panel w-full max-w-3xl mx-auto p-8">
+      <VideoBackground />
+      <div className="panel w-full max-w-4xl mx-auto p-8">
         <div className="flex items-center justify-between mb-6">
           <h1 className="text-xl font-bold">Comptes</h1>
           <Link href="/" className="link text-sm">← Retour</Link>
