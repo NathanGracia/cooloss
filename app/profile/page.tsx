@@ -3,6 +3,7 @@ import Link from 'next/link';
 import { getCurrentClaims } from '@/lib/session';
 import { prisma } from '@/lib/prisma';
 import VideoBackground from '@/components/VideoBackground';
+import AppHeader from '@/components/AppHeader';
 
 export default async function ProfilePage() {
   const claims = await getCurrentClaims();
@@ -14,6 +15,7 @@ export default async function ProfilePage() {
   return (
     <main className="min-h-screen flex items-center justify-center p-6">
       <VideoBackground />
+      <AppHeader claims={claims} />
       <div className="panel w-full max-w-sm p-8 text-center">
         {claims.avatarFile ? (
           // eslint-disable-next-line @next/next/no-img-element
@@ -31,7 +33,7 @@ export default async function ProfilePage() {
               width: 96, height: 96, borderRadius: '50%', margin: '0 auto',
               background: 'linear-gradient(180deg, #ffffff, #dcecf7)',
               display: 'flex', alignItems: 'center', justifyContent: 'center',
-              fontFamily: "'Fredoka One', sans-serif", fontSize: 32, color: 'var(--accent)',
+              fontFamily: "'Continuum', sans-serif", fontWeight: 700, fontSize: 32, color: 'var(--accent)',
             }}
           >
             {displayName.slice(0, 2).toUpperCase()}

@@ -1,5 +1,27 @@
 @import "tailwindcss";
-@import url('https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@500;600;700;800&display=swap');
+
+/* Continuum — police auto-hébergée (public/fonts), fournie par Nathan.
+   Une seule famille, 3 fichiers statiques mappés par plage de poids : le
+   navigateur choisit automatiquement le bon fichier selon le font-weight
+   demandé, pas besoin de changer les usages existants (400/500/600/700...). */
+@font-face {
+  font-family: 'Continuum';
+  src: url('/fonts/contl.ttf') format('truetype');
+  font-weight: 100 300;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Continuum';
+  src: url('/fonts/contm.ttf') format('truetype');
+  font-weight: 400 500;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Continuum';
+  src: url('/fonts/contb.ttf') format('truetype');
+  font-weight: 600 900;
+  font-display: swap;
+}
 
 :root {
   --bg: #58b3ec;
@@ -14,11 +36,11 @@
 body {
   background: var(--bg);
   color: var(--text);
-  font-family: 'Nunito', sans-serif;
+  font-family: 'Continuum', sans-serif;
   min-height: 100vh;
 }
 
-h1 { font-family: 'Fredoka One', sans-serif; font-weight: 400; }
+h1 { font-family: 'Continuum', sans-serif; font-weight: 700; }
 
 .panel {
   background: var(--panel);

@@ -4,6 +4,7 @@ import { getCurrentClaims } from '@/lib/session';
 import AvatarUploader from '@/components/AvatarUploader';
 import DisplayNameEditor from '@/components/DisplayNameEditor';
 import VideoBackground from '@/components/VideoBackground';
+import AppHeader from '@/components/AppHeader';
 
 export default async function ProfileEditPage() {
   const claims = await getCurrentClaims();
@@ -12,6 +13,7 @@ export default async function ProfileEditPage() {
   return (
     <main className="min-h-screen flex items-center justify-center p-6">
       <VideoBackground />
+      <AppHeader claims={claims} />
       <div className="panel w-full max-w-sm p-8 space-y-6">
         <div>
           <h1 className="text-xl font-bold">{claims.username}</h1>
