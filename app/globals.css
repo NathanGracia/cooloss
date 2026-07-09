@@ -56,3 +56,25 @@ body {
 
 a.link { color: var(--accent); text-decoration: none; }
 a.link:hover { text-decoration: underline; }
+
+/* ── Hub (page d'accueil) ─────────────────────────────────────────────────── */
+@keyframes hub-cloud-drift { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+
+.hub-card {
+  transition: transform 0.15s ease, background 0.15s ease;
+}
+.hub-card:hover {
+  transform: translateY(-4px) scale(1.03);
+  background: #8CD1D8 !important;
+}
+.hub-card-title {
+  color: #59AFAE;
+  text-shadow: -1px -1px 0 #fff, 1px -1px 0 #fff, -1px 1px 0 #fff, 1px 1px 0 #fff, 0 2px 4px rgba(20,90,90,0.25);
+  transition: color 0.15s ease;
+}
+.hub-card:hover .hub-card-title { color: #1a1a1a; }
+
+.hub-cloud-layer-1 { animation: hub-cloud-drift 140s linear infinite; }
+.hub-cloud-layer-2 { animation: hub-cloud-drift 200s linear infinite reverse; }
+
+.hub-menu-item:hover { background: #dbeefb; }

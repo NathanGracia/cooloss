@@ -1,74 +1,72 @@
 import Link from 'next/link';
 import { getCurrentClaims } from '@/lib/session';
-import LogoutButton from '@/components/LogoutButton';
-
-const APPS = [
-  { name: 'Blindtoss', url: 'https://blindtoss.nathangracia.com' },
-  { name: 'Memoss', url: 'https://memoss.nathangracia.com' },
-];
+import Hub from '@/components/Hub';
 
 export default async function Home() {
   const claims = await getCurrentClaims();
 
+  if (!claims) {
+    return (
+      <main
+        style={{
+          minHeight: '100vh',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          padding: 24,
+          background: 'linear-gradient(180deg, #0f6fd6 0%, #2f8fe0 22%, #58b3ec 42%, #86cdf0 58%, #b9e4f5 68%)',
+        }}
+      >
+        <div
+          style={{
+            width: '100%',
+            maxWidth: 380,
+            background: 'linear-gradient(180deg, #ffffff, #eaf6fb)',
+            borderRadius: 22,
+            border: '2px solid #ffffff',
+            boxShadow: '0 10px 0 rgba(10,70,130,0.2), 0 14px 24px rgba(5,40,80,0.28)',
+            padding: 32,
+            textAlign: 'center',
+            fontFamily: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif",
+          }}
+        >
+          <h1 style={{ color: '#1a5fb0', margin: '0 0 6px', fontSize: 24 }}>Cooloss</h1>
+          <p style={{ color: '#4a7a94', margin: '0 0 24px', fontSize: 14 }}>
+            Compte unifié pour toutes les apps de Nathan.
+          </p>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+            <Link
+              href="/login"
+              style={{
+                padding: 12, borderRadius: 24, border: '2px solid #ffffff', background: 'linear-gradient(180deg, #6bb9e8, #3f8fd4)',
+                boxShadow: '0 4px 0 rgba(10,50,100,0.3)', fontWeight: 800, fontSize: 15, color: '#ffffff', textDecoration: 'none',
+              }}
+            >
+              Se connecter
+            </Link>
+            <Link
+              href="/register"
+              style={{
+                padding: 12, borderRadius: 24, border: '2px solid #bfe0f5', background: 'transparent',
+                fontWeight: 700, fontSize: 15, color: '#1a5fb0', textDecoration: 'none',
+              }}
+            >
+              Créer un compte
+            </Link>
+          </div>
+        </div>
+      </main>
+    );
+  }
+
   return (
-    <main className="min-h-screen flex items-center justify-center p-6">
-      <div className="panel w-full max-w-md p-8">
-        <h1 className="text-2xl font-bold mb-1">cooloss</h1>
-        <p className="text-sm mb-6" style={{ color: 'var(--muted)' }}>
-          Compte unifié pour toutes les apps de Nathan.
-        </p>
-
-        {claims ? (
-          <div className="space-y-5">
-            <div className="flex items-center gap-3">
-              {claims.avatarFile ? (
-                // eslint-disable-next-line @next/next/no-img-element
-                <img
-                  src={claims.avatarFile}
-                  alt=""
-                  width={48}
-                  height={48}
-                  className="rounded-full object-cover"
-                  style={{ width: 48, height: 48 }}
-                />
-              ) : (
-                <div
-                  className="rounded-full flex items-center justify-center font-bold"
-                  style={{ width: 48, height: 48, background: 'var(--accent)' }}
-                >
-                  {claims.username.slice(0, 2).toUpperCase()}
-                </div>
-              )}
-              <div>
-                <div className="font-semibold">{claims.displayName || claims.username}</div>
-                {claims.isAdmin && (
-                  <Link href="/admin" className="text-xs" style={{ color: 'var(--accent)' }}>Admin →</Link>
-                )}
-              </div>
-            </div>
-
-            <div className="space-y-2">
-              {APPS.map((app) => (
-                <a key={app.url} href={app.url} className="btn btn-ghost w-full">
-                  {app.name}
-                </a>
-              ))}
-            </div>
-
-            <div className="flex gap-2">
-              <Link href="/profile/edit" className="btn btn-ghost flex-1">Mon profil</Link>
-              <div className="flex-1">
-                <LogoutButton />
-              </div>
-            </div>
-          </div>
-        ) : (
-          <div className="space-y-3">
-            <Link href="/login" className="btn btn-primary w-full">Se connecter</Link>
-            <Link href="/register" className="btn btn-ghost w-full">Créer un compte</Link>
-          </div>
-        )}
-      </div>
-    </main>
+    <Hub
+      claims={{
+        username: claims.username,
+        displayName: claims.displayName,
+        isAdmin: claims.isAdmin,
+        avatarFile: claims.avatarFile,
+      }}
+    />
   );
 }
